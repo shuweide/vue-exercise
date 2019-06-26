@@ -208,8 +208,10 @@
               getData() {
                 const vm = this;
                 const api = 'http://opendata2.epa.gov.tw/AQI.json';
+                // const cors = 'https://cors-anywhere.herokuapp.com/';
 
                 // 使用 jQuery ajax
+                // $.get(cors+api).then(function (response) {
                 $.get(api).then(function (response) {
                   vm.data = response;
                   vm.location = [...new Set(vm.data.map((item => item.County)))];
