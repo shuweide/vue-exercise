@@ -144,32 +144,23 @@
 
           <div>
             <h4>關注城市</h4>
-            <div class="card-columns">
-              <div class="card" :class="getMatchCSS(item.Status)" v-for="item in data"
-                v-if="stared.includes(item.SiteName)">
-                <div class="card-header">{{ item.County}} - {{ item.SiteName }}
-                  <a href="#" class="float-right" @click.prevent="deleteFromStared(item)"><i
-                      class="fas fa-star"></i></a>
-                </div>
-                <div class="card-body">
-                  <ul class="list-unstyled">
-                    <li>AQI 指數: {{ item.AQI }}</li>
-                    <li>PM2.5: {{ item['PM2.5'] }}</li>
-                    <li>說明: {{ item.Status }}</li>
-                  </ul>
-                  {{ item.PublishTime }}
-                </div>
-              </div>
-            </div>
+            <cards :data="data.filter((item) => stared.includes(item.SiteName))" @add="addToStared" @del="deleteFromStared" :is-mark="true">
+              </cards>
           </div>
 
           <hr>
 
+          <cards :data="data" :filter="filter" @add="addToStared" @del="deleteFromStared" :is-mark="false">
+          </cards>
+        </div>
+
+        <script type="text/x-template" id="cards">
           <div class="card-columns">
             <div class="card" :class="getMatchCSS(item.Status)" v-for="item in data"
               v-if="(!filter || !!filter && filter == item.County)">
               <div class="card-header">{{ item.County}} - {{ item.SiteName }}
-                <a href="#" class="float-right" @click.prevent="addToStared(item)"><i class="far fa-star"></i></a>
+                <a v-if="!isMark" href="#" class="float-right" @click.prevent="addToStared(item)"><i class="far fa-star"></i></a>
+                <a v-else href="#" class="float-right" @click.prevent="deleteFromStared(item)"><i class="fas fa-star"></i></a>
               </div>
               <div class="card-body">
                 <ul class="list-unstyled">
@@ -181,7 +172,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </script>
 
         <script>
           // API 來源
@@ -194,6 +185,32 @@
             ['非常不健康', 'status-aqi5'],
             ['危害', 'status-aqi6'],
           ]);
+
+          Vue.component('cards',{
+            props: {
+              data:{
+              },
+              filter:{
+                default:'',
+                type: String
+              },
+              isMark:{
+                type: Boolean
+              }
+            },
+            template: '#cards',
+            methods:{
+              getMatchCSS(status) {
+                return cssMap.has(status) ? cssMap.get(status) : '';
+              },
+              addToStared(add){
+                this.$emit('add', add);
+              },
+              deleteFromStared(del){
+                this.$emit('del', del);
+              }
+            }
+          })
 
           var app = new Vue({
             el: '#app',
@@ -218,9 +235,6 @@
                   console.log(response)
                 });
                 vm.stared = JSON.parse(localStorage.getItem('stared')) || [];
-              },
-              getMatchCSS(status) {
-                return cssMap.has(status) ? cssMap.get(status) : '';
               },
               addToStared(add) {
                 const vm = this;
