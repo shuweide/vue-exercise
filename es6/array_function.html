@@ -127,26 +127,54 @@ const people = [
 
 // forEach 與 map
 // 將所有物件增加 icash 有多少金額的欄位
+// people.forEach(function(item, index, array){
+//   item.icash = item.money + 500;
+//   console.log(item);
+// });
 
+// let newPeople = people.map(function(item, index, array){
+//   return {...item, icash: item.money + 500}
+// });
+// console.log(newPeople);
 
 // filter
 // 挑出金額少於 5000 的物件
+// let filterPeople = people.filter(function(item, index){
+//   return item.money < 5000;
+// });
+// console.log(filterPeople);
 
 // find
 // 1. 找到金額 = 500 的物件
 // 2. 找到 > 5000 的物件
+// let findPeople = people.find(function(item, index){
+//   return item.money == 500;
+// });
+// console.log(findPeople);
 
 // every
 // 1. 所有物件是否都超過 10000 元
 // 2. 是否所有物件超過 300 元
+// const ans = people.every((person,i) => person.money > 300);
+// console.log(ans); 
+
 
 // some
 // 1. 是否有物件超過 10000 元
 // 2. 是否有物件持有金額少於 300元
+// const ans = people.some((person,i) => person.money > 10000);
+// console.log(ans); 
 
 // reduce
 // 去除掉老媽，請問剩下的人有多少錢？
+const sum = people
+  .filter((person, index) => person.money != Infinity)
+  .reduce((prev, person, index) => {
+    console.log(prev, person, index);
+    return prev + person.money;
+  }, 0);
 
+console.log(sum);
 </script> 
         </div>
       </div>
